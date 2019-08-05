@@ -31,7 +31,7 @@ rightDown = False
 gameStarted = False
 gameEnded = False
 
-# Initialise game platforms
+# Initialise game platform variablesr
 gamePlatforms = []
 platformSpeed = 3
 platformDelay = 2000
@@ -147,7 +147,7 @@ def movePlayer():
       player["x"] = windowWidth - player["width"]
 
 # ------------------------------------------------------------------------------
-# CREATE PLATFORM
+# CREATE PLATFORM OBJECT
 # ------------------------------------------------------------------------------
 
 # Creates platform object
@@ -164,9 +164,11 @@ def createPlatform():
   # Create variable gamePlatforms and append co-ords for platform + gap
   gamePlatforms.append({"pos" : [0, platformY], "gap" : gapPosition})
 
-  #
+  # Returns elapsed game time at time platform created
   lastPlatform = GAME_TIME.get_ticks()
 
+# Reduces the platformDelay interval by 50ms each time a platform is created
+# until the minimum delay is only 800ms, down from a starting delay of 2000ms
   if platformDelay > 800:
     platformDelay -= 50
 
@@ -178,9 +180,12 @@ def movePlatforms():
   # print("Platforms")
 
   for idx, platform in enumerate(gamePlatforms):
-
+    # For each platform update its x co-ord by platformSpeed (i.e. - 3px) to
+    # move it up toward the top of the screen by 3px
     platform["pos"][1] -= platformSpeed
 
+    # Checks if each platform is completely above top of the screen and, IF SO
+    # removes the platform from the platform list.
     if platform["pos"][1] < -10:
       gamePlatforms.pop(idx)
 
@@ -285,9 +290,10 @@ while True:
 # ------------------------------------------------------------------------------
   # Creates a platform around every 2 seconds.  The get_ticks function returns
   # the legnth of time for which the game has been running.  To see how long it
-  # has been since the last platform we subjtract lastPlatform from the runtime
-  # (i.e. GAME_TIME.get_ticks()) and IF this is greater than platformDelay,
-  # create a new platform
+  # has been since the last platform we subtract lastPlatform (time elapsed at
+  # platform's creation) from the game's TOTAL runtime to date (i.e.
+  # GAME_TIME.get_ticks()) and IF this is greater than platformDelay,create a
+  # new platform
   if GAME_TIME.get_ticks() - lastPlatform > platformDelay:
     createPlatform()
 
