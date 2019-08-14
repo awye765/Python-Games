@@ -19,6 +19,7 @@ mouseDown = False
 
 background = pygame.image.load("assets/background.jpg")
 logo = pygame.image.load("assets/logo.png")
+
 UITab = pygame.image.load("assets/tabs.png")
 UICoordinates = [{"name" : "mercury", "coordinates" : (132,687)},
 				 {"name" : "venus", "coordinates" : (229,687)},
@@ -36,6 +37,7 @@ drawAttractions = True
 
 gravity = 10.0
 
+# Draws UI elements
 def drawUI():
 	surface.blit(UITab, (131,687))
 	surface.blit(solarsystem.images["mercury"], (158,714))
@@ -47,6 +49,7 @@ def drawUI():
 	surface.blit(solarsystem.images["neptune"], (724,697))
 	surface.blit(solarsystem.images["uranus"], (822,697))
 
+# Draws planets
 def drawPlanets():
 
 	for planet in celestialBodies:
@@ -56,23 +59,32 @@ def drawPlanets():
 
 # Draws currentBody that user is dragging onto the surface upon mouse click.
 def drawCurrentBody():
-
+	# Places currentBody at the user's x, y mouse coordinates.
 	currentBody["position"][0] = mousePosition[0]
 	currentBody["position"][1] = mousePosition[1]
 
+	# Draws a soruce onto the surface: blit(source, dest, area=None, special_flags=0) -> Rect
+	# Dest can be a pair of coordinates, as it is here:
 	surface.blit(solarsystem.images[currentBody["name"]], (currentBody["position"][0] - currentBody["radius"], currentBody["position"][1] - currentBody["radius"]))
 
 def calculateMovement():
 
+	# Iterates through each planet in the celestialBodies list and checks its
+	# affect on each other celestialBody in the list.
 	for planet in celestialBodies:
 
 		for otherPlanet in celestialBodies:
-
+			# Checks otherPlanet =/= as current planet, i.e. because we do not
+			# want to check a planet's affect against itself.
 			if otherPlanet is not planet:
+				# DIRECTION: The difference in the X, Y coordinates of the objects
+				direction = (otherPlanet["position"][0] - planet["position"][0], otherPlanet["position"][1] - planet["position"][1])
 
-				direction = (otherPlanet["position"][0] - planet["position"][0], otherPlanet["position"][1] - planet["position"][1]) # The difference in the X, Y coordinates of the objects
-				magnitude = math.hypot(otherPlanet["position"][0] - planet["position"][0], otherPlanet["position"][1] - planet["position"][1]) # The distance between the two objects
-				nDirection = (direction[0] / magnitude, direction[1] / magnitude) # Normalised Vector pointing in the direction of the force
+				# MAGNITUDE: The distance between the two objects
+				magnitude = math.hypot(otherPlanet["position"][0] - planet["position"][0], otherPlanet["position"][1] - planet["position"][1])
+
+				# NORMALISED VECTOR: pointing in the direction of the force.
+				nDirection = (direction[0] / magnitude, direction[1] / magnitude)
 
 				## We need to limit the gravity to stop things flying off to infinity... and beyond!
 				if magnitude < 5:
@@ -80,13 +92,23 @@ def calculateMovement():
 				elif magnitude > 30:
 					magnitude = 30
 
-				strength = ((gravity * planet["mass"] * otherPlanet["mass"]) / (magnitude * magnitude)) / otherPlanet["mass"] # How strong should the attraction be?
+				# Dividing by the magnitude accelerates the objects towards
+				# each other, i.e. because the magnitude (i.e. distance between
+				# the x, y coordinates of each plane) decreases and therefore
+				# we are continually dividing a larger number by an increasingly
+				# smaller number, which drives up the STRENGTH of the force.
+				strength = ((gravity * planet["mass"] * otherPlanet["mass"]) / (magnitude * magnitude)) / otherPlanet["mass"]
 
+				# Calculates adjustment to the x, y coordinates of the
+				#notherPlanet by a multiplying each x, y coordinate by strength.
 				appliedForce = (nDirection[0] * strength, nDirection[1] * strength)
 
+				# Applies the appliedForce to each x, y coordinate of the
+				# otherPlanet.
 				otherPlanet["velocity"][0] -= appliedForce[0]
 				otherPlanet["velocity"][1] -= appliedForce[1]
 
+				# Darws line between the planet and otherPlanet.
 				if drawAttractions is True:
 					pygame.draw.line(surface, (255,255,255), (planet["position"][0],planet["position"][1]), (otherPlanet["position"][0],otherPlanet["position"][1]), 1)
 
@@ -172,7 +194,10 @@ while True:
 	if currentBody is not None:
 		drawCurrentBody()
 
-		# If our user has released the mouse, add the new planet to the celestialBodies list and let gravity do its thing
+		# If our user has released the mouse, add the new planet to the
+		# celestialBodies list and let gravity do its thing.  This is what sets
+		# each planet moving off on initiation.  Test with a single planet in
+		# play to see what is meant by this comment.  See also line 212 below!
 		if mouseDown is False:
 			currentBody["velocity"][0] = (mousePosition[0] - previousMousePosition[0]) / 4
 			currentBody["velocity"][1] = (mousePosition[1] - previousMousePosition[1]) / 4
