@@ -213,3 +213,9 @@ while True:
 
 	clock.tick(60)
 	pygame.display.update()
+
+# Vectors
+#
+# http://www.rasmus.is/uk/t/F/Su58k03.htm
+#
+# https://www.mathsisfun.com/algebra/vectors.html
