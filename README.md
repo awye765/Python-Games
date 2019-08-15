@@ -20,7 +20,7 @@ Annotated and worked examples of each technique / game from Magpi - [Make Games 
 
 - [ ] Chapter 8 | Building classes (Fred's Bad Day game)
 - [ ] Chapter 9 | The aliens are trying to kill me (Space Invaders clone - Part 1)
-- [ ] Chapter 10 | The aliens are here & they're coming in waves (Space Invaders clone - Part 2)\
+- [ ] Chapter 10 | The aliens are here & they're coming in waves (Space Invaders clone - Part 2)
 
 # <a name="screenshots">Technologies
 
