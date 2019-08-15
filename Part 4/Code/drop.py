@@ -98,7 +98,7 @@ def movePlayer():
     # Update player's y co-ord by adding vy velocity, i.e. pulling player
     # down toward bottom of screen
     player["y"] += player["vy"]
-
+    # print("Platform Status: OFF")
     # Update dropping variable to indicate player IS dropping and update the
     # number of platformsDroppedThrough by +1
     if dropping is False:
@@ -115,15 +115,39 @@ def movePlayer():
     foundPlatformTop = False
     yOffset = 0
     dropping = False
+    # print("Platform Status: ON")
 
-    # Kickstarts while loop to check if player ON a platform
+    # Kickstarts while loop to check if player ON a platform.  Note that the
+    # block and platform are moving at different speeds, hence when they meet
+    # they don't touch at the edges, but overlap upon meeting.
     while foundPlatformTop is False:
 
+      # If bottom x, y - yOffset px == BLACK the top of the platform has been
+      # found.  The player object is then bumped up by -1 px along the y axis.
       if surface.get_at(( int(player["x"]), ( int(player["y"]) + player["height"]) - yOffset )) == (0,0,0,255):
         player["y"] -= yOffset
         foundPlatformTop = True
+        # print("IF: Test")
+        # print(("Player Y + Height: {}").format(player["y"] + player["height"]))
+        # print(("Player Y + Height - yOffset: {}").format(player["y"] + player["height"] - yOffset))
+        # print(("Platform Y: {}").format(gamePlatforms[0]))
+
+      # Unless above satisfied, the below is run.  This updates yOffset by +1,
+      # meaning that the next time the above if statement is run, we are checking
+      # the next pixel up from the one previous along the y axis of the block.
+      # This process repeats until we find a black pixel, at which point
+      # foundPlatformTop is TRUE, and the while loop stopped.  Note that the only
+      # colors on the surface when this while loop is run are black (background)
+      # and white (the platform) as the block is drawn after the player movement
+      # is finalised.  See also diagram in "assets" folder to visualise how this
+      # while loop works in practice.
       elif (player["y"] + player["height"]) - yOffset > 0:
         yOffset += 1
+        # print("ELIF: Test")
+        # print(("Player Y + Height: {}").format(player["y"] + player["height"]))
+        # print(("Player Y + Height - yOffset: {}").format(player["y"] + player["height"] - yOffset))
+        # print(("Platform Y: {}").format(gamePlatforms[0]))
+
       else :
         # If we don't find a BLACK px before we reach the top of the surface
         # then it's GAME OVER.
@@ -180,7 +204,7 @@ def movePlatforms():
   # print("Platforms")
 
   for idx, platform in enumerate(gamePlatforms):
-    # For each platform update its x co-ord by platformSpeed (i.e. - 3px) to
+    # For each platform update its y co-ord by platformSpeed (i.e. - 3px) to
     # move it up toward the top of the screen by 3px
     platform["pos"][1] -= platformSpeed
 
@@ -271,8 +295,11 @@ while True:
     timer = GAME_TIME.get_ticks() - gameBeganAt
 
     movePlatforms()
+
     drawPlatforms()
+
     movePlayer()
+
     drawPlayer()
 
 # If game has ended, run below code
@@ -301,8 +328,8 @@ while True:
 # SETS GAME FRAME RATE
 # ------------------------------------------------------------------------------
 
-  # Runs program at 60 frames per second
-  clock.tick(60)
+  # Runs program at 60 frames per secosnd
+  clock.tick(5)
 
 # ------------------------------------------------------------------------------
 # UPDATES GAME DISPLAY
