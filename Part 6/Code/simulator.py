@@ -67,6 +67,7 @@ def drawCurrentBody():
 	# Dest can be a pair of coordinates, as it is here:
 	surface.blit(solarsystem.images[currentBody["name"]], (currentBody["position"][0] - currentBody["radius"], currentBody["position"][1] - currentBody["radius"]))
 
+# Calculates effect each object has on each other object.
 def calculateMovement():
 
 	# Iterates through each planet in the celestialBodies list and checks its
@@ -108,7 +109,7 @@ def calculateMovement():
 				otherPlanet["velocity"][0] -= appliedForce[0]
 				otherPlanet["velocity"][1] -= appliedForce[1]
 
-				# Darws line between the planet and otherPlanet.
+				# Draws line between the planet and otherPlanet.
 				if drawAttractions is True:
 					pygame.draw.line(surface, (255,255,255), (planet["position"][0],planet["position"][1]), (otherPlanet["position"][0],otherPlanet["position"][1]), 1)
 
