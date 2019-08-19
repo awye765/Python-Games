@@ -33,10 +33,12 @@ barrelInterval = 1500
 goLeft = False
 goRight = False
 
+# Quit game function
 def quitGame():
 	pygame.quit()
 	sys.exit()
 
+# New barrel function
 def newBarrel():
 	global Barrels, lastBarrel, lastBarrelSlot
 
@@ -54,7 +56,7 @@ def newBarrel():
 
 Fred.loadImages(pygame)
 
-# 'main' loop
+# Main Game Loop
 while True:
 
 	timeTick = GAME_TIME.get_ticks()
@@ -86,12 +88,12 @@ while True:
 						gameFinishedTime = timeTick
 
 			elif timeTick - barrel.timeBroken > 1000:
-
 				barrelsToRemove.append(idx)
 				continue
 
 			if barrel.needsRemoving is True:
 				barrelsToRemove.append(idx)
+				print("barrel.needsRemoving is True")
 				continue
 
 		pygame.draw.rect(surface, (175,59,59), (0, windowHeight - 10, (windowWidth / 100) * Fred.health , 10))
